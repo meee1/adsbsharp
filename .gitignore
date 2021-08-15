@@ -1,0 +1,4 @@
+/ADSBSharp/bin
+/ADSBSharp/obj
+*.user
+/.vs

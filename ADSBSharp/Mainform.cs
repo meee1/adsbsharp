@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
@@ -7,13 +8,33 @@ namespace ADSBSharp
 {
     public unsafe partial class MainForm : Form
     {        
-        private IFrameSink _frameSink;
+        private IFrameSink _frameSink = new SimpleTcpServer();
         private readonly AdsbBitDecoder _decoder = new AdsbBitDecoder();
         private readonly RtlSdrIO _rtlDevice = new RtlSdrIO();        
         private bool _isDecoding;        
         private bool _initialized;
         private int _frameCount;
         private float _avgFps;
+        private Pluto _pluto;
+
+        public static byte[] StringToByteArray(String hex)
+        {
+            int NumberChars = hex.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
+        }
+
+        public static string hex2binary(string hexvalue)
+        {
+            // Convert.ToUInt32 this is an unsigned int
+            // so no negative numbers but it gives you one more bit
+            // it much of a muchness 
+            // Uint MAX is 4,294,967,295 and MIN is 0
+            // this padds to 4 bits so 0x5 = "0101"
+            return String.Join(String.Empty, hexvalue.Select(c => Convert.ToString(Convert.ToUInt32(c.ToString(), 16), 2).PadLeft(4, '0')));
+        }
 
         public MainForm()
         {
@@ -30,6 +51,41 @@ namespace ADSBSharp
             portNumericUpDown_ValueChanged(null, null);
             confidenceNumericUpDown_ValueChanged(null, null);
             timeoutNumericUpDown_ValueChanged(null, null);
+
+            _initialized = true;
+
+            {
+                //https://drwxr.org/2016/09/automatic-dependent-surveillance-broadcast-ads-b-part-i/
+                //https://wiki.analog.com/resources/eval/user-guides/picozed_sdr/tutorials/adsb
+                /*
+Transmit Frequency: 1090 MHz
+Modulation: Pulse Position Modulation (PPM)
+Data Rate: 1 Mbit/s
+Message Length: 56 μsec or 112 μsec
+24-bit CRC checksum
+                 */
+                string test = "8D4840D6202CC371C32CE0576098";
+                //test = "8D86D5E058135037C0A9112B72B7";
+
+                test = "A140" + test;
+
+                var by = hex2binary(test);
+
+                foreach (var bit in by) { 
+                    _decoder.ProcessSample((bit - '0')* 200);
+                }
+
+                foreach (var bit in by)
+                {
+                    _decoder.ProcessSample((bit - '0') * 200);
+                }
+
+                foreach (var bit in by)
+                {
+                    _decoder.ProcessSample((bit - '0') * 200);
+                }
+
+            }
 
             try
             {
@@ -63,10 +119,10 @@ namespace ADSBSharp
             }
 
             startBtn.Text = _isDecoding ? "Stop" : "Start";
-            deviceComboBox.Enabled = !_rtlDevice.Device.IsStreaming;
-            portNumericUpDown.Enabled = !_rtlDevice.Device.IsStreaming;
-            shareCb.Enabled = !_rtlDevice.Device.IsStreaming;
-            hostnameTb.Enabled = !_rtlDevice.Device.IsStreaming && shareCb.Checked;
+            //deviceComboBox.Enabled = !_rtlDevice.Device.IsStreaming;
+            //portNumericUpDown.Enabled = !_rtlDevice.Device.IsStreaming;
+            //shareCb.Enabled = !_rtlDevice.Device.IsStreaming;
+            //hostnameTb.Enabled = !_rtlDevice.Device.IsStreaming && shareCb.Checked;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -211,7 +267,18 @@ namespace ADSBSharp
 
             try
             {
-                _rtlDevice.Start(rtl_SamplesAvailable);
+                try
+                {
+                    _pluto = new Pluto();
+                    _pluto.Start(rtl_SamplesAvailable);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+
+              //  _rtlDevice.Start(rtl_SamplesAvailable);
             }
             catch (Exception e)
             {
@@ -225,7 +292,7 @@ namespace ADSBSharp
 
         private void StopDecoding()
         {
-            _rtlDevice.Stop();
+            //_rtlDevice.Stop();
             _frameSink.Stop();
             _frameSink = null;
             _isDecoding = false;
@@ -243,6 +310,8 @@ namespace ADSBSharp
             {
                 var real = buf[i].Real;
                 var imag = buf[i].Imag;
+
+                //Console.WriteLine($"{real}  {imag}");
 
                 var mag = real * real + imag * imag;
 

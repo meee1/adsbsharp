@@ -335,5 +335,26 @@ namespace ADSBSharp
     {
         public int Real;
         public int Imag;
+
+        public Complex(int v, int p) : this()
+        {
+            Real = v;
+            Imag = p;
+        }
+
+        public static Complex operator *(float a, Complex b)
+        {
+            return new Complex((int)(b.Real * a), (int)(b.Imag * a));
+        }
+
+        public static Complex operator *(Complex a, float b)
+        {
+            return new Complex((int)(a.Real * b), (int)(a.Imag * b));
+        }
+
+        public static Complex operator *(Complex a, Complex b)
+        {
+            return new Complex(a.Real * b.Real - a.Imag * b.Imag, a.Real * b.Imag + a.Imag * b.Real);
+        }
     }
 }

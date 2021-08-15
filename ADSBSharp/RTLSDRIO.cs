@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace ADSBSharp
 {
-    public unsafe delegate void SamplesReadyDelegate(object sender, Complex *data, int length);
+    public unsafe delegate void SamplesReadyDelegate(object sender, Complex* data, int length);
 
     public unsafe class RtlSdrIO : IDisposable
     {       

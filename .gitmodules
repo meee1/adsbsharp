@@ -1,0 +1,3 @@
+[submodule "ADSBSharp/libiio"]
+	path = ADSBSharp/libiio
+	url = https://github.com/analogdevicesinc/libiio.git
