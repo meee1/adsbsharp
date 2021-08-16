@@ -132,8 +132,8 @@ namespace ADSBSharp
                                 var samplesI = _rx0_i.read(buf);
                                 var samplesQ = _rx0_q.read(buf);
 
-                                    samplesI = bandpass.ProcessSamples(samplesI.Select(a=>(double)a).ToArray()).Select(a=>(byte)a).ToArray();
-                                    samplesQ = bandpass.ProcessSamples(samplesQ.Select(a => (double)a).ToArray()).Select(a => (byte)a).ToArray();
+                                    //samplesI = bandpass.ProcessSamples(samplesI.Select(a=>(double)a).ToArray()).Select(a=>(byte)a).ToArray();
+                                    //samplesQ = bandpass.ProcessSamples(samplesQ.Select(a => (double)a).ToArray()).Select(a => (byte)a).ToArray();
 
                                     var ptrIq = (Complex*)unsafeBuffer.Address;
 
