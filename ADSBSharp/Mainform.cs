@@ -275,6 +275,7 @@ Message Length: 56 μsec or 112 μsec
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
+                    MessageBox.Show("Unable to start Pluto device\n" + ex.Message);
                 }
 
 

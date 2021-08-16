@@ -2,7 +2,7 @@
     
    <PropertyGroup>
      <OutputType>Exe</OutputType>
-     <TargetFramework>net6.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><StartupObject>ADSBSharp.Program</StartupObject>  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+     <TargetFramework>net5.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><StartupObject>ADSBSharp.Program</StartupObject>  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>  <ApplicationIcon />
    </PropertyGroup>
     
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,6 +33,43 @@
     </PackageReference>
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
+   </ItemGroup>
+    
+
+   <ItemGroup>
+     <None Update="libgcc_s_seh-1.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="libiconv-2.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="libiio.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="liblzma-5.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="libserialport-0.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="libstdc++-6.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="libusb-1.0.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="libwinpthread-1.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="libxml2-2.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="libzip.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
+     <None Update="zlib1.dll">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </None>
    </ItemGroup>
 
     
