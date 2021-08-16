@@ -89,7 +89,7 @@ Message Length: 56 μsec or 112 μsec
 
             try
             {
-                _rtlDevice.Open();
+               /* _rtlDevice.Open();
                 
                 var devices = DeviceDisplay.GetActiveDevices();
                 deviceComboBox.Items.Clear();
@@ -97,7 +97,7 @@ Message Length: 56 μsec or 112 μsec
 
                 //_initialized = true;
                 deviceComboBox.SelectedIndex = 0;
-                deviceComboBox_SelectedIndexChanged(null, null);                                              
+                deviceComboBox_SelectedIndexChanged(null, null);  */                                            
             }
             catch (Exception e)
             {

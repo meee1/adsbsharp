@@ -1,6 +1,11 @@
 ﻿using iio;
+using MathNet.Filtering;
+using MathNet.Filtering.FIR;
+using NAudio.Utils;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -113,32 +118,46 @@ namespace ADSBSharp
                         unsafe
                         {
                             UnsafeBuffer unsafeBuffer = UnsafeBuffer.Create((int)sampleCount, sizeof(Complex));
-                        
 
-                        while (true) { 
-                            buf.refill();
+                            OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 1999000, 2001000);
+
+                            var ms = new MemoryStream();
+
+                            //using (var writer = new WaveFileWriter(new IgnoreDisposeStream(ms), new WaveFormat(2000000, 16,2)))
+                            {
+
+                                    while (true) { 
+                                buf.refill();
                            
-                            var samplesI = _rx0_i.read(buf);
-                            var samplesQ = _rx0_q.read(buf);
+                                var samplesI = _rx0_i.read(buf);
+                                var samplesQ = _rx0_q.read(buf);
 
-                                var ptrIq = (Complex*)unsafeBuffer.Address;
+                                    samplesI = bandpass.ProcessSamples(samplesI.Select(a=>(double)a).ToArray()).Select(a=>(byte)a).ToArray();
+                                    samplesQ = bandpass.ProcessSamples(samplesQ.Select(a => (double)a).ToArray()).Select(a => (byte)a).ToArray();
 
-                                    for (int i = 0; i < samplesI.Length/2; i++)
-                                    {
-                                        int sampleOffset = (i * 2);
+                                    var ptrIq = (Complex*)unsafeBuffer.Address;
 
-                                        UInt16 sampleI = (UInt16)((samplesI[sampleOffset + 1] << 8) + samplesI[sampleOffset]);
-                                        UInt16 sampleQ = (UInt16)((samplesQ[sampleOffset + 1] << 8) + samplesQ[sampleOffset]);
+                                        for (int i = 0; i < samplesI.Length/2; i++)
+                                        {
+                                            int sampleOffset = (i * 2);
 
-                                        ptrIq->Real = ((((sampleI & 0xFFFF) + 32768) % 65536) -32768);
-                    ptrIq->Imag = ((((sampleQ & 0xFFFF) +32768) % 65536) -32768);
-                    ptrIq++;
+                                            UInt16 sampleI = (UInt16)((samplesI[sampleOffset + 1] << 8) + samplesI[sampleOffset]);
+                                            UInt16 sampleQ = (UInt16)((samplesQ[sampleOffset + 1] << 8) + samplesQ[sampleOffset]);
+
+                                            ptrIq->Real = ((((sampleI & 0xFFFF) + 32768) % 65536) -32768);
+                                            ptrIq->Imag = ((((sampleQ & 0xFFFF) +32768) % 65536) -32768);
+                                            ptrIq++;
+                                         //   writer.WriteSample(ptrIq->Real);
+                                         //   writer.WriteSample(ptrIq->Imag);
                                     }
 
-                                    callback(this, (Complex*)unsafeBuffer, (int)buf.samples_count);
+                                       // writer.Flush();
 
-                            }
-                        }
+                                        callback(this, (Complex*)unsafeBuffer, (int)buf.samples_count);
+
+                            } 
+                                }
+                        }                        
                     });
 
                     //Console.WriteLine("Read " + chn.read(buf).Length + " bytes from hardware");

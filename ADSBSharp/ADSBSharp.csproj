@@ -62,9 +62,7 @@
     <Compile Include="libiio\bindings\csharp\IOBuffer.cs" />
     <Compile Include="libiio\bindings\csharp\ScanContext.cs" />
     <Compile Include="libiio\bindings\csharp\Trigger.cs" />
-    <Compile Include="Mainform.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Mainform.cs" />
     <Compile Include="Mainform.designer.cs">
       <DependentUpon>Mainform.cs</DependentUpon>
     </Compile>
@@ -115,8 +113,14 @@
     <PackageReference Include="FftSharp">
       <Version>1.0.8</Version>
     </PackageReference>
+    <PackageReference Include="MathNet.Filtering">
+      <Version>0.7.0</Version>
+    </PackageReference>
     <PackageReference Include="MathNet.Numerics">
       <Version>4.15.0</Version>
+    </PackageReference>
+    <PackageReference Include="NAudio.Core">
+      <Version>2.0.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
