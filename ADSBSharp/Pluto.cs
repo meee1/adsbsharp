@@ -81,6 +81,7 @@ namespace ADSBSharp
                         var gainmode = phy.get_channel("voltage0").find_attribute("gain_control_mode");
                         gainmode.write( "slow_attack");
                         //manual
+                        //gain.write(40);
 
                         var port = phy.get_channel("voltage0").find_attribute("rf_port_select");
                         var rfbw = phy.get_channel("voltage0").find_attribute("rf_bandwidth");
@@ -89,6 +90,13 @@ namespace ADSBSharp
 
                         var gain = phy.get_channel("voltage0").find_attribute("hardwaregain");
 
+
+                        var tx = ctx.get_device("cf-ad9361-dds-core-lpc");
+
+                        var rfbwtx = phy.get_channel("voltage2").find_attribute("rf_bandwidth");
+                        var freqtx = phy.get_channel("altvoltage1").find_attribute("frequency");
+
+
                         var _rx0_i = dev.get_channel("voltage0");
                         var _rx0_q = dev.get_channel("voltage1");
 
@@ -96,8 +104,6 @@ namespace ADSBSharp
                         _rx0_q.enable();
 
                         IOBuffer buf = new IOBuffer(dev, 2000000 / 20);
-
-                        //gain.write(40);
 
                         rfbw.write(2000000);
                         
@@ -119,7 +125,8 @@ namespace ADSBSharp
                         {
                             UnsafeBuffer unsafeBuffer = UnsafeBuffer.Create((int)sampleCount, sizeof(Complex));
 
-                            OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 1999000, 2001000);
+                            OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2100000);
+                            OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2100000);
 
                             var ms = new MemoryStream();
 
@@ -132,8 +139,8 @@ namespace ADSBSharp
                                 var samplesI = _rx0_i.read(buf);
                                 var samplesQ = _rx0_q.read(buf);
 
-                                    //samplesI = bandpass.ProcessSamples(samplesI.Select(a=>(double)a).ToArray()).Select(a=>(byte)a).ToArray();
-                                    //samplesQ = bandpass.ProcessSamples(samplesQ.Select(a => (double)a).ToArray()).Select(a => (byte)a).ToArray();
+                                    samplesI = bandpass.ProcessSamples(samplesI.Select(a=>(double)a).ToArray()).Select(a=>(byte)a).ToArray();
+                                    samplesQ = bandpass2.ProcessSamples(samplesQ.Select(a => (double)a).ToArray()).Select(a => (byte)a).ToArray();
 
                                     var ptrIq = (Complex*)unsafeBuffer.Address;
 

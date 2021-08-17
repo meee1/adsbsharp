@@ -2,7 +2,7 @@
     
    <PropertyGroup>
      <OutputType>Exe</OutputType>
-     <TargetFramework>net5.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><StartupObject>ADSBSharp.Program</StartupObject>  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>  <ApplicationIcon />
+     <TargetFramework>net5.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><StartupObject>ADSBSharp.Program</StartupObject>  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>  <ApplicationIcon /><DisableWinExeOutputInference>True</DisableWinExeOutputInference>
    </PropertyGroup>
     
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

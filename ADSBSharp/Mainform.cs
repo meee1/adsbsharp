@@ -1,4 +1,8 @@
-﻿using System;
+﻿using MathNet.Filtering;
+using MathNet.Filtering.FIR;
+using NAudio.Wave;
+using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -53,7 +57,7 @@ namespace ADSBSharp
             timeoutNumericUpDown_ValueChanged(null, null);
 
             _initialized = true;
-
+            try
             {
                 //https://drwxr.org/2016/09/automatic-dependent-surveillance-broadcast-ads-b-part-i/
                 //https://wiki.analog.com/resources/eval/user-guides/picozed_sdr/tutorials/adsb
@@ -66,6 +70,7 @@ Message Length: 56 μsec or 112 μsec
                  */
                 string test = "8D4840D6202CC371C32CE0576098";
                 //test = "8D86D5E058135037C0A9112B72B7";
+                test = "8D7C62ABBFAD4000000000BB2FBC";
 
                 test = "A140" + test;
 
@@ -80,24 +85,67 @@ Message Length: 56 μsec or 112 μsec
                     _decoder.ProcessSample((bit - '0') * 200);
                 }
 
-                foreach (var bit in by)
-                {
-                    _decoder.ProcessSample((bit - '0') * 200);
+                var t=0;
+                /*
+                WaveFileReader reader = new WaveFileReader(@"C:\SDRSharp\SDRSharp_20210816_221955Z_1090000000Hz_IQ.wav");
+                var st = File.OpenWrite("test.wav");
+                st.SetLength(0);
+                var writer = new WaveFileWriter(st, new WaveFormat(2000000, 16, 2));
+
+                    _frameSink.Start(hostnameTb.Text, (int)portNumericUpDown.Value);
+
+                OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
+                OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
+
+                double[] I = new double[2000000];
+                double[] Q = new double[2000000];
+                int a = 0;
+
+                while (reader.CurrentTime < reader.TotalTime) {
+                    var sample = reader.ReadNextSampleFrame();
+
+                    var real=(int) (sample[0] * 10000);
+                    var imag =(int) (sample[1] * 10000);
+
+                    I[a]= sample[0];
+                    Q[a]= sample[1];
+
+                    a++;
+
+                    if(a >= 2000000)
+                    {
+                        a=0;
+
+                        var real2 = bandpass.ProcessSamples(I);
+                        var imag2 = bandpass2.ProcessSamples(Q);
+
+                        for(int b=0; b < 2000000; b++) {
+
+                            var mag = real2[b] * real2[b] + imag2[b] * imag2[b];
+
+                            writer.WriteSample((float)real2[b]*3);
+                            writer.WriteSample((float)imag2[b]*3);
+
+                            _decoder.ProcessSample((int)(mag*int.MaxValue));
+                        }
+
+                        writer.Flush();
+                    }
+               
                 }
+            */
 
-            }
 
-            try
-            {
-               /* _rtlDevice.Open();
-                
-                var devices = DeviceDisplay.GetActiveDevices();
-                deviceComboBox.Items.Clear();
-                deviceComboBox.Items.AddRange(devices);
 
-                //_initialized = true;
-                deviceComboBox.SelectedIndex = 0;
-                deviceComboBox_SelectedIndexChanged(null, null);  */                                            
+                /* _rtlDevice.Open();
+
+                 var devices = DeviceDisplay.GetActiveDevices();
+                 deviceComboBox.Items.Clear();
+                 deviceComboBox.Items.AddRange(devices);
+
+                 //_initialized = true;
+                 deviceComboBox.SelectedIndex = 0;
+                 deviceComboBox_SelectedIndexChanged(null, null);  */
             }
             catch (Exception e)
             {
