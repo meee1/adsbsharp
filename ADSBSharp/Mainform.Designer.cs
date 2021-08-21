@@ -30,17 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.deviceComboBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tunerGainTrackBar = new System.Windows.Forms.TrackBar();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tunerAgcCheckBox = new System.Windows.Forms.CheckBox();
-            this.gainLabel = new System.Windows.Forms.Label();
-            this.frequencyCorrectionNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.tunerTypeLabel = new System.Windows.Forms.Label();
-            this.rtlAgcCheckBox = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.startBtn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -53,157 +42,11 @@
             this.portNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.shareCb = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.hostnameTb = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.tunerGainTrackBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.frequencyCorrectionNumericUpDown)).BeginInit();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.confidenceNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.portNumericUpDown)).BeginInit();
             this.SuspendLayout();
-            // 
-            // deviceComboBox
-            // 
-            this.deviceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.deviceComboBox.FormattingEnabled = true;
-            this.deviceComboBox.Location = new System.Drawing.Point(18, 38);
-            this.deviceComboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.deviceComboBox.Name = "deviceComboBox";
-            this.deviceComboBox.Size = new System.Drawing.Size(279, 23);
-            this.deviceComboBox.TabIndex = 0;
-            this.deviceComboBox.SelectedIndexChanged += new System.EventHandler(this.deviceComboBox_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(18, 18);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(42, 15);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "Device";
-            // 
-            // tunerGainTrackBar
-            // 
-            this.tunerGainTrackBar.Enabled = false;
-            this.tunerGainTrackBar.Location = new System.Drawing.Point(7, 137);
-            this.tunerGainTrackBar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tunerGainTrackBar.Maximum = 10000;
-            this.tunerGainTrackBar.Name = "tunerGainTrackBar";
-            this.tunerGainTrackBar.Size = new System.Drawing.Size(301, 45);
-            this.tunerGainTrackBar.TabIndex = 3;
-            this.tunerGainTrackBar.Scroll += new System.EventHandler(this.tunerGainTrackBar_Scroll);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 119);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 15);
-            this.label2.TabIndex = 22;
-            this.label2.Text = "RF Gain";
-            // 
-            // tunerAgcCheckBox
-            // 
-            this.tunerAgcCheckBox.AutoSize = true;
-            this.tunerAgcCheckBox.Checked = true;
-            this.tunerAgcCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tunerAgcCheckBox.Location = new System.Drawing.Point(18, 96);
-            this.tunerAgcCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tunerAgcCheckBox.Name = "tunerAgcCheckBox";
-            this.tunerAgcCheckBox.Size = new System.Drawing.Size(83, 19);
-            this.tunerAgcCheckBox.TabIndex = 2;
-            this.tunerAgcCheckBox.Text = "Tuner AGC";
-            this.tunerAgcCheckBox.UseVisualStyleBackColor = true;
-            this.tunerAgcCheckBox.CheckedChanged += new System.EventHandler(this.tunerAgcCheckBox_CheckedChanged);
-            // 
-            // gainLabel
-            // 
-            this.gainLabel.Location = new System.Drawing.Point(226, 119);
-            this.gainLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.gainLabel.Name = "gainLabel";
-            this.gainLabel.Size = new System.Drawing.Size(79, 15);
-            this.gainLabel.TabIndex = 26;
-            this.gainLabel.Text = "1000dB";
-            this.gainLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.gainLabel.Visible = false;
-            // 
-            // frequencyCorrectionNumericUpDown
-            // 
-            this.frequencyCorrectionNumericUpDown.Location = new System.Drawing.Point(201, 195);
-            this.frequencyCorrectionNumericUpDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.frequencyCorrectionNumericUpDown.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.frequencyCorrectionNumericUpDown.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            -2147483648});
-            this.frequencyCorrectionNumericUpDown.Name = "frequencyCorrectionNumericUpDown";
-            this.frequencyCorrectionNumericUpDown.Size = new System.Drawing.Size(97, 23);
-            this.frequencyCorrectionNumericUpDown.TabIndex = 4;
-            this.frequencyCorrectionNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.frequencyCorrectionNumericUpDown.ValueChanged += new System.EventHandler(this.frequencyCorrectionNumericUpDown_ValueChanged);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(14, 197);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(155, 15);
-            this.label4.TabIndex = 28;
-            this.label4.Text = "Frequency correction (ppm)";
-            // 
-            // tunerTypeLabel
-            // 
-            this.tunerTypeLabel.Location = new System.Drawing.Point(197, 18);
-            this.tunerTypeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.tunerTypeLabel.Name = "tunerTypeLabel";
-            this.tunerTypeLabel.Size = new System.Drawing.Size(108, 15);
-            this.tunerTypeLabel.TabIndex = 29;
-            this.tunerTypeLabel.Text = "E4000";
-            this.tunerTypeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // rtlAgcCheckBox
-            // 
-            this.rtlAgcCheckBox.AutoSize = true;
-            this.rtlAgcCheckBox.Location = new System.Drawing.Point(18, 69);
-            this.rtlAgcCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.rtlAgcCheckBox.Name = "rtlAgcCheckBox";
-            this.rtlAgcCheckBox.Size = new System.Drawing.Size(71, 19);
-            this.rtlAgcCheckBox.TabIndex = 1;
-            this.rtlAgcCheckBox.Text = "RTL AGC";
-            this.rtlAgcCheckBox.UseVisualStyleBackColor = true;
-            this.rtlAgcCheckBox.CheckedChanged += new System.EventHandler(this.rtlAgcCheckBox_CheckedChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.rtlAgcCheckBox);
-            this.groupBox1.Controls.Add(this.deviceComboBox);
-            this.groupBox1.Controls.Add(this.tunerTypeLabel);
-            this.groupBox1.Controls.Add(this.tunerGainTrackBar);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.frequencyCorrectionNumericUpDown);
-            this.groupBox1.Controls.Add(this.tunerAgcCheckBox);
-            this.groupBox1.Controls.Add(this.gainLabel);
-            this.groupBox1.Location = new System.Drawing.Point(14, 164);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.groupBox1.Size = new System.Drawing.Size(315, 233);
-            this.groupBox1.TabIndex = 30;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "RTL-SDR Control";
             // 
             // startBtn
             // 
@@ -372,51 +215,15 @@
             this.notifyIcon.Visible = true;
             this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
-            // shareCb
-            // 
-            this.shareCb.AutoSize = true;
-            this.shareCb.Location = new System.Drawing.Point(14, 51);
-            this.shareCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.shareCb.Name = "shareCb";
-            this.shareCb.Size = new System.Drawing.Size(136, 19);
-            this.shareCb.TabIndex = 35;
-            this.shareCb.Text = "Share with ADSBHub";
-            this.shareCb.UseVisualStyleBackColor = true;
-            this.shareCb.CheckedChanged += new System.EventHandler(this.shareCb_CheckedChanged);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(174, 52);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(32, 15);
-            this.label6.TabIndex = 36;
-            this.label6.Text = "Host";
-            // 
-            // hostnameTb
-            // 
-            this.hostnameTb.Enabled = false;
-            this.hostnameTb.Location = new System.Drawing.Point(215, 47);
-            this.hostnameTb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.hostnameTb.Name = "hostnameTb";
-            this.hostnameTb.Size = new System.Drawing.Size(114, 23);
-            this.hostnameTb.TabIndex = 37;
-            this.hostnameTb.Text = "sdrsharp.com";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(343, 412);
-            this.Controls.Add(this.hostnameTb);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.shareCb);
+            this.ClientSize = new System.Drawing.Size(343, 163);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.portNumericUpDown);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.startBtn);
-            this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -426,10 +233,6 @@
             this.Text = "ADSB#";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
-            ((System.ComponentModel.ISupportInitialize)(this.tunerGainTrackBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.frequencyCorrectionNumericUpDown)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutNumericUpDown)).EndInit();
@@ -441,18 +244,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ComboBox deviceComboBox;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TrackBar tunerGainTrackBar;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.CheckBox tunerAgcCheckBox;
-        private System.Windows.Forms.Label gainLabel;
-        private System.Windows.Forms.NumericUpDown frequencyCorrectionNumericUpDown;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label tunerTypeLabel;
-        private System.Windows.Forms.CheckBox rtlAgcCheckBox;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button startBtn;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label framesPerSecLbl;
@@ -465,9 +256,6 @@
         private System.Windows.Forms.NumericUpDown confidenceNumericUpDown;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown timeoutNumericUpDown;
-        private System.Windows.Forms.CheckBox shareCb;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox hostnameTb;
     }
 }
 

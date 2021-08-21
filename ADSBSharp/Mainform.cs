@@ -13,8 +13,7 @@ namespace ADSBSharp
     public unsafe partial class MainForm : Form
     {        
         private IFrameSink _frameSink = new SimpleTcpServer();
-        private readonly AdsbBitDecoder _decoder = new AdsbBitDecoder();
-        private readonly RtlSdrIO _rtlDevice = new RtlSdrIO();        
+        private readonly AdsbBitDecoder _decoder = new AdsbBitDecoder();     
         private bool _isDecoding;        
         private bool _initialized;
         private int _frameCount;
@@ -49,7 +48,7 @@ namespace ADSBSharp
             _decoder.FrameReceived += delegate(byte[] frame, int length)
                                           {
                                               Interlocked.Increment(ref _frameCount);
-                                              _frameSink.FrameReady(frame, length);
+                                              _frameSink?.FrameReady(frame, length);
                                           };
 
             portNumericUpDown_ValueChanged(null, null);
@@ -181,77 +180,9 @@ Message Length: 56 μsec or 112 μsec
             }
         }
        
-        private void deviceComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //if (!_initialized)
-            //{
-            //    return;
-            //}
-            var deviceDisplay = (DeviceDisplay) deviceComboBox.SelectedItem;
-            if (deviceDisplay != null)
-            {
-                try
-                {
-                    _rtlDevice.SelectDevice(deviceDisplay.Index);                    
-                    _rtlDevice.Frequency = 1090000000;
-                    _rtlDevice.Device.Samplerate = 2000000;
-                    _initialized = true;
-                }
-                catch (Exception ex)
-                {
-                    deviceComboBox.SelectedIndex = -1;
-                    _initialized = false;
-                    MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+  
 
-                ConfigureDevice();
-                ConfigureGUI();
-            }
-        }
 
-        private void tunerGainTrackBar_Scroll(object sender, EventArgs e)
-        {
-            if (!_initialized)
-            {
-                return;
-            }
-            var gain = _rtlDevice.Device.SupportedGains[tunerGainTrackBar.Value];
-            _rtlDevice.Device.TunerGain = gain;
-            gainLabel.Text = gain / 10.0 + " dB";            
-        }
-        
-        private void tunerAgcCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_initialized)
-            {
-                return;
-            }
-            tunerGainTrackBar.Enabled = tunerAgcCheckBox.Enabled && !tunerAgcCheckBox.Checked;
-            _rtlDevice.Device.UseTunerAGC = tunerAgcCheckBox.Checked;
-            gainLabel.Visible = tunerAgcCheckBox.Enabled && !tunerAgcCheckBox.Checked;
-            if (!tunerAgcCheckBox.Checked)
-            {
-                tunerGainTrackBar_Scroll(null, null);
-            }
-        }
-
-        private void frequencyCorrectionNumericUpDown_ValueChanged(object sender, EventArgs e)
-        {
-            if (!_initialized)
-            {
-                return;
-            }
-            _rtlDevice.Device.FrequencyCorrection = (int) frequencyCorrectionNumericUpDown.Value;
-        }
-
-        private void rtlAgcCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_initialized)
-            {
-                return;
-            }
-            _rtlDevice.Device.UseRtlAGC = rtlAgcCheckBox.Checked;            
-        }
 
         #endregion
 
@@ -264,47 +195,20 @@ Message Length: 56 μsec or 112 μsec
             {
                 return;
             }
-            
-            tunerTypeLabel.Text = _rtlDevice.Device.TunerType.ToString();
-            tunerGainTrackBar.Maximum = _rtlDevice.Device.SupportedGains.Length - 1;
-            tunerGainTrackBar.Value = tunerGainTrackBar.Maximum;
-            
-            for (var i = 0; i < deviceComboBox.Items.Count; i++)
-            {
-                var deviceDisplay = (DeviceDisplay)deviceComboBox.Items[i];
-                if (deviceDisplay.Index == _rtlDevice.Device.Index)
-                {
-                    deviceComboBox.SelectedIndex = i;
-                    break;
-                }
-            }            
+         
         }
 
-        private void ConfigureDevice()
-        {                        
-            frequencyCorrectionNumericUpDown_ValueChanged(null, null);
-            rtlAgcCheckBox_CheckedChanged(null, null);
-            tunerAgcCheckBox_CheckedChanged(null, null);
-            if (!tunerAgcCheckBox.Checked)
-            {
-                tunerGainTrackBar_Scroll(null, null);
-            }
-        }
 
         private void StartDecoding()
         {                        
             try
             {
-                if (shareCb.Checked)
-                {
-                    _frameSink = new AdsbHubClient();
-                }
-                else
+     
                 {
                     _frameSink = new SimpleTcpServer();
                 }
                 
-                _frameSink.Start(hostnameTb.Text,(int) portNumericUpDown.Value);
+                _frameSink.Start("",(int) portNumericUpDown.Value);
             }
             catch (Exception e)
             {
@@ -412,10 +316,6 @@ Message Length: 56 μsec or 112 μsec
             _decoder.Timeout = (int) timeoutNumericUpDown.Value;
         }
 
-        private void shareCb_CheckedChanged(object sender, EventArgs e)
-        {
-            hostnameTb.Enabled = shareCb.Checked;
-        }
     }
 
     public class DeviceDisplay
