@@ -1,3 +1,6 @@
 [submodule "ADSBSharp/libiio"]
 	path = ADSBSharp/libiio
 	url = git@github.com:meee1/libiio.git
+[submodule "sdrsharp"]
+	path = sdrsharp
+	url = git@github.com:cgommel/sdrsharp.git

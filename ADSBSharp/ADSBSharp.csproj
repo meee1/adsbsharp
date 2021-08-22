@@ -41,6 +41,12 @@
     
 
    <ItemGroup>
+     <ProjectReference Include="..\sdrsharp\PanView\SDRSharp.PanView.csproj" />
+     <ProjectReference Include="..\sdrsharp\Radio\SDRSharp.Radio.csproj" />
+   </ItemGroup>
+    
+
+   <ItemGroup>
      <None Update="libgcc_s_seh-1.dll">
        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
      </None>

@@ -1,6 +1,7 @@
 ﻿using MathNet.Filtering;
 using MathNet.Filtering.FIR;
 using NAudio.Wave;
+using SDRSharp.Radio;
 using System;
 using System.IO;
 using System.Linq;
@@ -69,7 +70,7 @@ Message Length: 56 μsec or 112 μsec
                  */
                 string test = "8D4840D6202CC371C32CE0576098";
                 //test = "8D86D5E058135037C0A9112B72B7";
-                test = "8D7C62ABBFAD4000000000BB2FBC";
+                //test = "8D7C62ABBFAD4000000000BB2FBC";
 
                 test = "A140" + test;
 
@@ -83,15 +84,16 @@ Message Length: 56 μsec or 112 μsec
                 {
                     _decoder.ProcessSample((bit - '0') * 200);
                 }
-
-                var t=0;
                 /*
+                var t=0;
+                
                 WaveFileReader reader = new WaveFileReader(@"C:\SDRSharp\SDRSharp_20210816_221955Z_1090000000Hz_IQ.wav");
                 var st = File.OpenWrite("test.wav");
                 st.SetLength(0);
                 var writer = new WaveFileWriter(st, new WaveFormat(2000000, 16, 2));
 
-                    _frameSink.Start(hostnameTb.Text, (int)portNumericUpDown.Value);
+                    _frameSink.Start("", (int)portNumericUpDown.Value);
+                _decoder.ConfidenceLevel = 2;
 
                 OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
                 OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
@@ -129,11 +131,12 @@ Message Length: 56 μsec or 112 μsec
                         }
 
                         writer.Flush();
+                        Console.WriteLine(reader.CurrentTime);
                     }
                
                 }
-            */
-
+            
+                */
 
 
                 /* _rtlDevice.Open();
@@ -209,6 +212,11 @@ Message Length: 56 μsec or 112 μsec
                 }
                 
                 _frameSink.Start("",(int) portNumericUpDown.Value);
+
+                //waterfall.BandType = SDRSharp.PanView.BandType.Center;
+                waterfall.CenterFrequency = 1090000000;
+                waterfall.SpectrumWidth = 2000000;
+                //waterfall.Frequency = 1090000000;
             }
             catch (Exception e)
             {
@@ -259,6 +267,33 @@ Message Length: 56 μsec or 112 μsec
 
         private void rtl_SamplesAvailable(object sender, Complex* buf, int length)
         {
+            float[] power = new float[1024];
+
+            Span<Complex> comp = new Span<Complex>(buf, 1024);
+
+            var iq = comp.ToArray().Select(a => new SDRSharp.Radio.Complex(a.Real, a.Imag)).ToArray();
+
+            Fourier.ForwardTransform(iq, 1024);
+
+            Fourier.SpectrumPower(iq, power, 1024, 0 );
+
+            var max = power.Max();
+            var min = power.Min();
+            var avg = power.Average();
+            waterfall.DisplayRange = 60;//(int)(max - min);
+            waterfall.DisplayOffset = 130;//(int)max + 9;
+            waterfall.Attack = 1;
+            waterfall.Decay = 2;
+            //waterfall.UseSmoothing = true;
+             
+
+            Invoke((Action) delegate { 
+                fixed (float* ptr_f = power.Reverse().ToArray()) {
+                    waterfall.Render(ptr_f, 1024);
+                }
+            });
+            
+
             for (var i = 0; i < length; i++)
             {
                 var real = buf[i].Real;

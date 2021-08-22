@@ -125,8 +125,8 @@ namespace ADSBSharp
                         {
                             UnsafeBuffer unsafeBuffer = UnsafeBuffer.Create((int)sampleCount, sizeof(Complex));
 
-                            OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2100000);
-                            OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2100000);
+                            OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
+                            OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
 
                             var ms = new MemoryStream();
 

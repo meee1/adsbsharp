@@ -40,6 +40,7 @@
             this.fpsLabel = new System.Windows.Forms.Label();
             this.fpsTimer = new System.Windows.Forms.Timer(this.components);
             this.portNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.waterfall = new SDRSharp.PanView.Waterfall();
             this.label3 = new System.Windows.Forms.Label();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.groupBox2.SuspendLayout();
@@ -198,6 +199,33 @@
             0});
             this.portNumericUpDown.ValueChanged += new System.EventHandler(this.portNumericUpDown_ValueChanged);
             // 
+            // waterfall
+            // 
+            this.waterfall.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.waterfall.Attack = 0D;
+            this.waterfall.BandType = SDRSharp.PanView.BandType.Center;
+            this.waterfall.CenterFrequency = ((long)(0));
+            this.waterfall.Contrast = 0;
+            this.waterfall.Decay = 0D;
+            this.waterfall.DisplayOffset = 0;
+            this.waterfall.DisplayRange = 130;
+            this.waterfall.FilterBandwidth = 0;
+            this.waterfall.FilterOffset = 0;
+            this.waterfall.Frequency = ((long)(0));
+            this.waterfall.Location = new System.Drawing.Point(14, 163);
+            this.waterfall.Name = "waterfall";
+            this.waterfall.Size = new System.Drawing.Size(315, 258);
+            this.waterfall.SpectrumWidth = 0;
+            this.waterfall.StepSize = 0;
+            this.waterfall.TabIndex = 35;
+            this.waterfall.TimestampInterval = 0;
+            this.waterfall.UseSmoothing = false;
+            this.waterfall.UseSnap = false;
+            this.waterfall.UseTimestamps = false;
+            this.waterfall.Zoom = 0;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -219,15 +247,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(343, 163);
+            this.ClientSize = new System.Drawing.Size(343, 433);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.portNumericUpDown);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.startBtn);
+            this.Controls.Add(this.waterfall);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ADSB#";
@@ -256,6 +284,7 @@
         private System.Windows.Forms.NumericUpDown confidenceNumericUpDown;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown timeoutNumericUpDown;
+        SDRSharp.PanView.Waterfall waterfall;
     }
 }
 
