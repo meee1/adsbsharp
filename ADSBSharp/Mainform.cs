@@ -69,31 +69,43 @@ Message Length: 56 μsec or 112 μsec
 24-bit CRC checksum
                  */
                 string test = "8D4840D6202CC371C32CE0576098";
-                //test = "8D86D5E058135037C0A9112B72B7";
-                //test = "8D7C62ABBFAD4000000000BB2FBC";
+                //test = "8D7C5E42991068264004111A1869";
+                //test = "8D7C5E42F80000060049A089E732";
+                //test = "8D7C5E42587006D70AEFF68D8151";
+                //test = "8D7C5E425870026A6FBD9EECEE64";
 
-                test = "A140" + test;
 
                 var by = hex2binary(test);
+                by = by.Select(a=>a=='0' ? "01": "10").Aggregate((a,b) => { return a + b; });
 
-                foreach (var bit in by) { 
-                    _decoder.ProcessSample((bit - '0')* 200);
-                }
+                var pre = hex2binary("A140");
 
-                foreach (var bit in by)
+                _decoder.ConfidenceLevel = 1;
+                _decoder.ProcessSample(5);
+                _decoder.ProcessSample(5);
+
+                foreach (var bit in pre)
                 {
-                    _decoder.ProcessSample((bit - '0') * 200);
+                    _decoder.ProcessSample(((bit - '0') * 200) + 1);
                 }
-                /*
+
+                foreach (var bit in by) 
+                {
+                    _decoder.ProcessSample(((bit - '0')* 200) + 1);
+                }
+
+                _decoder.ConfidenceLevel = 3;
+
                 var t=0;
-                
+                /*
                 WaveFileReader reader = new WaveFileReader(@"C:\SDRSharp\SDRSharp_20210816_221955Z_1090000000Hz_IQ.wav");
+                reader.CurrentTime = new TimeSpan(0, 1,15);
                 var st = File.OpenWrite("test.wav");
                 st.SetLength(0);
                 var writer = new WaveFileWriter(st, new WaveFormat(2000000, 16, 2));
 
                     _frameSink.Start("", (int)portNumericUpDown.Value);
-                _decoder.ConfidenceLevel = 2;
+                _decoder.ConfidenceLevel = 3;
 
                 OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
                 OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
@@ -124,8 +136,8 @@ Message Length: 56 μsec or 112 μsec
 
                             var mag = real2[b] * real2[b] + imag2[b] * imag2[b];
 
-                            writer.WriteSample((float)real2[b]*3);
-                            writer.WriteSample((float)imag2[b]*3);
+                            writer.WriteSample((float)real2[b]*5);
+                            writer.WriteSample((float)mag*1000); //
 
                             _decoder.ProcessSample((int)(mag*int.MaxValue));
                         }
@@ -136,7 +148,7 @@ Message Length: 56 μsec or 112 μsec
                
                 }
             
-                */
+            */    
 
 
                 /* _rtlDevice.Open();

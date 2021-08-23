@@ -55,6 +55,7 @@ namespace ADSBSharp
 
             lock (_frameQueue)
             {
+                Console.Write(sb.ToString());
                 _frameQueue.Enqueue(sb.ToString());
             }
             _frameEvent.Set();
