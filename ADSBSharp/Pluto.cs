@@ -1,23 +1,36 @@
 ﻿using iio;
 using MathNet.Filtering;
 using MathNet.Filtering.FIR;
+using MathNet.Numerics.Distributions;
 using NAudio.Utils;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ADSBSharp
 {
+    public static class extensions
+    {
+        public static Attr find_attribute(this Channel chn, string attribute)
+        {
+            return chn.attrs.Where(a => a.name == attribute).First();
+        }
+
+    }
+
+
     public class Pluto
     {
+        public static bool run = false;
         public void Start(SamplesReadyDelegate callback)
         {
-            Context ctx = new Context("ip:192.168.2.1");
+            Context ctx = new Context("ip:pluto.local");
             if (ctx == null)
             {
                 Console.WriteLine("Unable to create IIO context");
@@ -95,21 +108,28 @@ namespace ADSBSharp
 
                         var rfbwtx = phy.get_channel("voltage2").find_attribute("rf_bandwidth");
                         var freqtx = phy.get_channel("altvoltage1").find_attribute("frequency");
-
+                        Console.WriteLine("TX Frequency: " + freqtx.read());
+                        Console.WriteLine("RX Frequency: " + freq.read());
 
                         var _rx0_i = dev.get_channel("voltage0");
                         var _rx0_q = dev.get_channel("voltage1");
 
+                        //ChannelsMask chnmask = new ChannelsMask((uint)dev.channels.Count);
                         _rx0_i.enable();
                         _rx0_q.enable();
 
                         IOBuffer buf = new IOBuffer(dev, 2000000 / 20);
+                        uint sampleSize = dev.get_sample_size();
 
                         rfbw.write(2000000);
-                        
+
+                        Console.WriteLine("sample rate {0}", samplehz.read());
                         samplehz.write((long)2000000);
 
                         freq.write(1090000000);
+                        
+                        //freq.write(916000000);
+                        
 
                         float scale = 1.0f / 32768.0f;
 
@@ -125,46 +145,49 @@ namespace ADSBSharp
                         {
                             UnsafeBuffer unsafeBuffer = UnsafeBuffer.Create((int)sampleCount, sizeof(Complex));
 
-                            OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
-                            OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
+                            OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 800000, 2000000);
+                            OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 800000, 2000000);
 
                             var ms = new MemoryStream();
+                            run = true;
 
                             //using (var writer = new WaveFileWriter(new IgnoreDisposeStream(ms), new WaveFormat(2000000, 16,2)))
                             {
+                                while (run)
+                                {
+                                    buf.refill();
 
-                                    while (true) { 
-                                buf.refill();
-                           
-                                var samplesI = _rx0_i.read(buf);
-                                var samplesQ = _rx0_q.read(buf);
 
-                                    samplesI = bandpass.ProcessSamples(samplesI.Select(a=>(double)a).ToArray()).Select(a=>(byte)a).ToArray();
-                                    samplesQ = bandpass2.ProcessSamples(samplesQ.Select(a => (double)a).ToArray()).Select(a => (byte)a).ToArray();
+                                    var samplesI = _rx0_i.read(buf);
+                                    var samplesQ = _rx0_q.read(buf);
+
+                                    //samplesI = bandpass.ProcessSamples(samplesI.Select(a => (double)a).ToArray()).Select(a => (byte)a).ToArray();
+                                    //samplesQ = bandpass2.ProcessSamples(samplesQ.Select(a => (double)a).ToArray()).Select(a => (byte)a).ToArray();
 
                                     var ptrIq = (Complex*)unsafeBuffer.Address;
 
-                                        for (int i = 0; i < samplesI.Length/2; i++)
-                                        {
-                                            int sampleOffset = (i * 2);
+                                    for (int i = 0; i < samplesI.Length / 2; i++)
+                                    {
+                                        int sampleOffset = (i * 2);
 
-                                            UInt16 sampleI = (UInt16)((samplesI[sampleOffset + 1] << 8) + samplesI[sampleOffset]);
-                                            UInt16 sampleQ = (UInt16)((samplesQ[sampleOffset + 1] << 8) + samplesQ[sampleOffset]);
+                                        UInt16 sampleI = (UInt16)((samplesI[sampleOffset + 1] << 8) + samplesI[sampleOffset]);
+                                        UInt16 sampleQ = (UInt16)((samplesQ[sampleOffset + 1] << 8) + samplesQ[sampleOffset]);
 
-                                            ptrIq->Real = ((((sampleI & 0xFFFF) + 32768) % 65536) -32768);
-                                            ptrIq->Imag = ((((sampleQ & 0xFFFF) +32768) % 65536) -32768);
-                                            ptrIq++;
-                                         //   writer.WriteSample(ptrIq->Real);
-                                         //   writer.WriteSample(ptrIq->Imag);
+                                        ptrIq->Real = ((((sampleI & 0xFFFF) + 32768) % 65536) - 32768);
+                                        ptrIq->Imag = ((((sampleQ & 0xFFFF) + 32768) % 65536) - 32768);
+                                        ptrIq++;
+                                        //   writer.WriteSample(ptrIq->Real);
+                                        //   writer.WriteSample(ptrIq->Imag);
                                     }
 
-                                       // writer.Flush();
+                                    // writer.Flush();
 
+                                    if(run)
                                         callback(this, (Complex*)unsafeBuffer, (int)buf.samples_count);
 
-                            } 
                                 }
-                        }                        
+                            }
+                        }
                     });
 
                     //Console.WriteLine("Read " + chn.read(buf).Length + " bytes from hardware");

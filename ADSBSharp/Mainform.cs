@@ -271,6 +271,7 @@ Message Length: 56 μsec or 112 μsec
             _isDecoding = false;
             _avgFps = 0f;
             _frameCount = 0;
+            Pluto.run = false;
         }
 
         #endregion
@@ -279,15 +280,19 @@ Message Length: 56 μsec or 112 μsec
 
         private void rtl_SamplesAvailable(object sender, Complex* buf, int length)
         {
+            //Console.Write(".");
             float[] power = new float[1024];
 
             Span<Complex> comp = new Span<Complex>(buf, 1024);
 
-            var iq = comp.ToArray().Select(a => new SDRSharp.Radio.Complex(a.Real, a.Imag)).ToArray();
+            var iqarray = comp.ToArray().Select(a => new SDRSharp.Radio.Complex(a.Real*100, a.Imag*100)).ToArray();
 
-            Fourier.ForwardTransform(iq, 1024);
+            fixed (SDRSharp.Radio.Complex* iq = iqarray)
+            {
+                Fourier.ForwardTransform(iq, 1024);
 
-            Fourier.SpectrumPower(iq, power, 1024, 0 );
+                Fourier.SpectrumPower(iqarray, power, 1024, 0);
+            }
 
             var max = power.Max();
             var min = power.Min();
@@ -297,13 +302,16 @@ Message Length: 56 μsec or 112 μsec
             waterfall.Attack = 1;
             waterfall.Decay = 2;
             //waterfall.UseSmoothing = true;
-             
 
-            Invoke((Action) delegate { 
-                fixed (float* ptr_f = power.Reverse().ToArray()) {
-                    waterfall.Render(ptr_f, 1024);
-                }
-            });
+            if (!this.IsDisposed && !this.Disposing && Pluto.run)
+                BeginInvoke((Action)delegate
+                {
+                    fixed (float* ptr_f = power.Reverse().ToArray())
+                    {
+                        if (!waterfall.IsDisposed)
+                            waterfall.Render(ptr_f, 1024);
+                    }
+                });
             
 
             for (var i = 0; i < length; i++)
