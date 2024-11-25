@@ -2,3 +2,6 @@
 /ADSBSharp/obj
 *.user
 /.vs
+obj
+bin
+.vs
