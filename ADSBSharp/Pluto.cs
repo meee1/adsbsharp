@@ -127,7 +127,7 @@ namespace ADSBSharp
                         samplehz.write((long)2000000);
 
                         freq.write(1090000000);
-                        
+
                         //freq.write(916000000);
                         
 

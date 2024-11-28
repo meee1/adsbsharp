@@ -105,7 +105,7 @@ namespace ADSBSharp
                     //{
                     //    Console.WriteLine("Ba333");
                     //}
-
+                    /*
                     var avg = (mag + lastMag) * 0.5f;
                     if (lastAvg > 0f)
                     {
@@ -117,7 +117,7 @@ namespace ADSBSharp
                         }
                     }
                     lastAvg = avg;
-
+                    */
                     var bit = lastMag > mag ? 1 : 0;
                     
                     var frameBitPosition = i / 2;

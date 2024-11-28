@@ -96,10 +96,12 @@ Message Length: 56 μsec or 112 μsec
 
                 _decoder.ConfidenceLevel = 3;
 
-                var t=0;
-                /*
-                WaveFileReader reader = new WaveFileReader(@"C:\SDRSharp\SDRSharp_20210816_221955Z_1090000000Hz_IQ.wav");
-                reader.CurrentTime = new TimeSpan(0, 1,15);
+                
+                //var file = @"C:\Users\mich1\Downloads\sdrpp_windows_x64\recordings\baseband_1090000000Hz_15-08-49_30-08-2024.wav";
+                //var file = @"C:\Users\mich1\Downloads\sdrpp_windows_x64\recordings\baseband_1090000000Hz_14-16-32_21-11-2024.wav";
+                var file = @"C:\SDRSharp\bin\SDRSharp_20241121_221419Z_1090199996Hz_IQ.wav";
+                WaveFileReader reader = new WaveFileReader(file);
+                reader.CurrentTime = new TimeSpan(0, 0, 0);
                 var st = File.OpenWrite("test.wav");
                 st.SetLength(0);
                 var writer = new WaveFileWriter(st, new WaveFormat(2000000, 16, 2));
@@ -107,48 +109,42 @@ Message Length: 56 μsec or 112 μsec
                     _frameSink.Start("", (int)portNumericUpDown.Value);
                 _decoder.ConfidenceLevel = 3;
 
-                OnlineFilter bandpass = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
-                OnlineFilter bandpass2 = OnlineFirFilter.CreateBandpass(ImpulseResponse.Finite, 2000000, 900000, 2000000);
+                OnlineFilter bandpass = OnlineFirFilter.CreateHighpass(ImpulseResponse.Finite, 2000000, 1000);
+                OnlineFilter bandpass2 = OnlineFirFilter.CreateHighpass(ImpulseResponse.Finite, 2000000, 1000);
 
-                double[] I = new double[2000000];
-                double[] Q = new double[2000000];
+                int buffersize = 1000000;
+                double[] I = new double[buffersize];
+                double[] Q = new double[buffersize];
                 int a = 0;
+                float mag2 = 0;
+                DateTime start = DateTime.Now;
+
+                _decoder.FrameReceived += delegate (byte[] frame, int length)
+                {
+                    Console.WriteLine(reader.CurrentTime);
+                    writer.Flush();
+                };
 
                 while (reader.CurrentTime < reader.TotalTime) {
                     var sample = reader.ReadNextSampleFrame();
 
-                    var real=(int) (sample[0] * 10000);
-                    var imag =(int) (sample[1] * 10000);
+                    writer.WriteSample((float)sample[0]);
 
-                    I[a]= sample[0];
-                    Q[a]= sample[1];
+                    //sample[0] = (float)bandpass.ProcessSample(sample[0]);
+                    //sample[1] = (float)bandpass2.ProcessSample(sample[1]);
 
-                    a++;
+                    //writer.WriteSample((float)sample[0]);
 
-                    if(a >= 2000000)
-                    {
-                        a=0;
+                    mag2 = ((sample[0] * sample[0] + sample[1] * sample[1]));
 
-                        var real2 = bandpass.ProcessSamples(I);
-                        var imag2 = bandpass2.ProcessSamples(Q);
+                    mag2 = mag2 * mag2;
 
-                        for(int b=0; b < 2000000; b++) {
+                    writer.WriteSample((float)(mag2));
 
-                            var mag = real2[b] * real2[b] + imag2[b] * imag2[b];
-
-                            writer.WriteSample((float)real2[b]*5);
-                            writer.WriteSample((float)mag*1000); //
-
-                            _decoder.ProcessSample((int)(mag*int.MaxValue));
-                        }
-
-                        writer.Flush();
-                        Console.WriteLine(reader.CurrentTime);
-                    }
-               
+                    _decoder.ProcessSample((int)(mag2 * int.MaxValue));
                 }
-            
-            */    
+
+                return;
 
 
                 /* _rtlDevice.Open();
