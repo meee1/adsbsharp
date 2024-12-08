@@ -99,7 +99,7 @@ Message Length: 56 μsec or 112 μsec
                 
                 //var file = @"C:\Users\mich1\Downloads\sdrpp_windows_x64\recordings\baseband_1090000000Hz_15-08-49_30-08-2024.wav";
                 //var file = @"C:\Users\mich1\Downloads\sdrpp_windows_x64\recordings\baseband_1090000000Hz_14-16-32_21-11-2024.wav";
-                var file = @"C:\SDRSharp\bin\SDRSharp_20241121_221419Z_1090199996Hz_IQ.wav";
+                var file = @"C:\Users\mich1\Desktop\demofile5.wav";
                 WaveFileReader reader = new WaveFileReader(file);
                 reader.CurrentTime = new TimeSpan(0, 0, 0);
                 var st = File.OpenWrite("test.wav");
@@ -128,23 +128,25 @@ Message Length: 56 μsec or 112 μsec
                 while (reader.CurrentTime < reader.TotalTime) {
                     var sample = reader.ReadNextSampleFrame();
 
-                    writer.WriteSample((float)sample[0]);
+                    //writer.WriteSample((float)sample[0]);
 
                     //sample[0] = (float)bandpass.ProcessSample(sample[0]);
                     //sample[1] = (float)bandpass2.ProcessSample(sample[1]);
 
                     //writer.WriteSample((float)sample[0]);
 
-                    mag2 = ((sample[0] * sample[0] + sample[1] * sample[1]));
+                    //mag2 = ((sample[0] * sample[0] + sample[1] * sample[1]));
 
-                    mag2 = mag2 * mag2;
+                    //mag2 = mag2 * mag2;
 
-                    writer.WriteSample((float)(mag2));
+                    //writer.WriteSample((float)(mag2));
 
-                    _decoder.ProcessSample((int)(mag2 * int.MaxValue));
+                    _decoder.ProcessSample((int)(sample[0] * int.MaxValue));
+                    
+                    if(reader.CurrentTime.TotalSeconds % 1 == 0)
+                        Console.Write(reader.CurrentTime + "\r");
                 }
 
-                return;
 
 
                 /* _rtlDevice.Open();
